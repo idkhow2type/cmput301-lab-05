@@ -34,12 +34,18 @@ class CityRepository {
     val cities: List<City>
         get() = _cities
 
-    // Who's to say city.name is primary key?
     fun addCity(city: City) {
-        citiesRef.document(city.name).set(city)
+        val doc = citiesRef.document()
+        val fullCity = City(city.name, city.province, doc.id)
+        doc.set(fullCity)
     }
 
     fun updateCity(oldCity: City, updatedCity: City) {
-        citiesRef.document(oldCity.name).set(updatedCity)
+        val fullCity = City(updatedCity.name, updatedCity.province, oldCity.id)
+        citiesRef.document(oldCity.id).set(fullCity)
+    }
+
+    fun deleteCity(city: City){
+        citiesRef.document(city.id).delete()
     }
 }
